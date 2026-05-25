@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "home-intercom"
+version = "0.1.1"
+description = "Home intercom for Raspberry Pi Zero 2 W with ReSpeaker"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "kopringo" }]
+dependencies = [
+    "gpiozero>=2.0",
+]
+
+[project.scripts]
+home-intercom = "home_intercom.cli:main"
+
+[project.urls]
+Repository = "https://github.com/kopringo/home-intercom"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+home_intercom = ["gongi.wav"]
