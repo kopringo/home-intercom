@@ -36,6 +36,7 @@ cd home-intercom
 ### 3. Install the application
 
 ```bash
+sudo apt install -y python3-dev gcc swig liblgpio-dev
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .

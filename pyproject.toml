@@ -12,6 +12,7 @@ license = { text = "MIT" }
 authors = [{ name = "kopringo" }]
 dependencies = [
     "gpiozero>=2.0",
+    "lgpio>=0.2; platform_machine == 'aarch64' or platform_machine == 'armv7l'",
     "PyYAML>=6.0",
     "requests>=2.31",
 ]
