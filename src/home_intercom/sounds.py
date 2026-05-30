@@ -66,14 +66,36 @@ def _write_mono_wav(path: Path, pcm: bytes) -> Path:
 
 
 
-def _gong_source_candidates() -> tuple[Path, ...]:
+def sounds_directories() -> tuple[Path, ...]:
     package_dir = Path(__file__).resolve().parent
     project_root = package_dir.parent.parent
     return (
-        project_root / "sounds" / GONG_FILENAME,
-        project_root / "src" / "home_intercom" / "sounds" / GONG_FILENAME,
-        package_dir / GONG_FILENAME,
+        project_root / "sounds",
+        project_root / "src" / "home_intercom" / "sounds",
+        package_dir,
     )
+
+
+def list_sound_files() -> list[str]:
+    """Return sorted ``*.wav`` filenames found under known sounds dirs."""
+    names: set[str] = set()
+    for directory in sounds_directories():
+        if directory.is_dir():
+            names.update(path.name for path in directory.glob("*.wav"))
+    return sorted(names)
+
+
+def _gong_source_candidates() -> tuple[Path, ...]:
+    return tuple(directory / GONG_FILENAME for directory in sounds_directories())
+
+
+def find_sound_file(filename: str) -> Path:
+    for directory in sounds_directories():
+        path = directory / filename
+        if path.is_file():
+            return path
+    locations = ", ".join(str(directory / filename) for directory in sounds_directories())
+    raise FileNotFoundError(f"{filename} not found. Place it in one of: {locations}")
 
 
 def find_gong_source() -> Path:

@@ -20,8 +20,9 @@ _ARECORD_FORMAT = {
 
 
 class AudioRecorder:
-    def __init__(self, *, alsa_device: str | None = None) -> None:
+    def __init__(self, *, alsa_device: str | None = None, alert_path: Path | None = None) -> None:
         self._alsa_device = alsa_device
+        self._alert_path = alert_path
         self._process: subprocess.Popen[bytes] | None = None
 
     @property
@@ -37,7 +38,7 @@ class AudioRecorder:
             return False
 
         try:
-            alert = gong_path()
+            alert = self._alert_path if self._alert_path is not None else gong_path()
         except FileNotFoundError as exc:
             print(f"Recording failed: {exc}")
             return False

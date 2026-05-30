@@ -12,6 +12,8 @@ license = { text = "MIT" }
 authors = [{ name = "kopringo" }]
 dependencies = [
     "gpiozero>=2.0",
+    "PyYAML>=6.0",
+    "requests>=2.31",
 ]
 
 [project.scripts]

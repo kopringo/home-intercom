@@ -12,7 +12,7 @@ from home_intercom.button import (
     DEFAULT_HOLD_DELAY_S,
     DEFAULT_TRIPLE_PRESS_WINDOW_S,
 )
-from home_intercom.core import DEFAULT_RECORD_LED_PIN
+from home_intercom.core import DEFAULT_RECORD_LED_PIN, run as run_intercom
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -82,26 +82,46 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="ALSA device for arecord/aplay (e.g. plughw:1,0)",
     )
+    run_parser.add_argument(
+        "--config",
+        metavar="PATH",
+        default=None,
+        help="Path to config YAML (default: /etc/home-intercom/config.yaml)",
+    )
+    run_parser.add_argument(
+        "--http-port",
+        type=int,
+        default=8080,
+        metavar="PORT",
+        help="HTTP config UI port (default: 8080)",
+    )
+    run_parser.add_argument(
+        "--no-http",
+        action="store_true",
+        help="Disable HTTP config UI",
+    )
     run_parser.set_defaults(func=_cmd_run)
 
     return parser
 
 
 def _cmd_run(args: argparse.Namespace) -> int:
-    from home_intercom.button import ButtonHandler
-    from home_intercom.core import IntercomApp
+    from pathlib import Path
 
-    button = ButtonHandler(
-        pin=args.button_pin,
+    from home_intercom.config import DEFAULT_CONFIG_PATH
+
+    run_intercom(
+        button_pin=args.button_pin,
         bounce_time=args.bounce_time,
         hold_delay_s=args.hold_delay,
         triple_press_window_s=args.triple_press_window,
-    )
-    IntercomApp(
-        button,
         record_led_pin=args.record_led_pin,
         alsa_device=args.alsa_device,
-    ).run(keyboard_debug=not args.no_keyboard_debug)
+        config_path=Path(args.config) if args.config is not None else DEFAULT_CONFIG_PATH,
+        http_port=args.http_port,
+        enable_http=not args.no_http,
+        keyboard_debug=not args.no_keyboard_debug,
+    )
     return 0
 
 
